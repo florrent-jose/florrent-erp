@@ -1,6 +1,6 @@
-# florrent MRP
+# florrent ERP
 
-A lightweight, browser-based Materials Requirements Planning system for florrent, hosted on GitHub Pages with real-time shared data via Firebase Firestore.
+A lightweight, browser-based Enterprise Resource Planning (ERP) system for florrent, hosted on GitHub Pages with real-time shared data via Firebase Firestore.
 
 ---
 
@@ -17,6 +17,8 @@ All users who know the password share the same live database. Changes made by on
 > **Note on file attachments:** Uploaded files (shipping labels, vendor docs, customer POs) are stored in the browser session only and are not synced to other users via Firestore (Firestore has a 1MB document limit). All other data — quotes, POs, invoices, work orders, customers, vendors, inventory — syncs in real time.
 
 ---
+
+> **Note on naming:** The app was renamed from MRP to ERP. The Firebase project ID (`florrent-mrp`) and Firestore path (`mrp/shared`) intentionally keep their original names, since changing them would disconnect the app from its existing data. Backups exported before the rename (with `mrp-data` inside) still import normally.
 
 ## Setup: Step by step
 
@@ -45,7 +47,7 @@ Click **Publish**. (This allows anyone with the URL to read/write — the passwo
 
 1. In Firebase Console, click the ⚙️ gear icon → **Project settings**
 2. Scroll down to **Your apps** → click the `</>` (Web) icon
-3. Register the app (name it anything, e.g. `mrp-web`)
+3. Register the app (name it anything, e.g. `erp-web`)
 4. Copy the `firebaseConfig` object — it looks like:
 
 ```js
@@ -59,7 +61,7 @@ const firebaseConfig = {
 };
 ```
 
-### Step 3 — Edit `florrent_mrp_v5.html`
+### Step 3 — Edit `florrent_erp_v5.html`
 
 Open the file in any text editor. Find this block near the top (around line 120):
 
@@ -79,10 +81,10 @@ Replace each `"REPLACE_WITH_YOUR_..."` value with your actual values from Step 2
 ### Step 4 — Put it on GitHub Pages
 
 1. Create a new GitHub repository (can be private or public — GitHub Pages works on both with the right plan, or just make it public)
-2. Upload `florrent_mrp_v5.html` and rename it to `index.html` in the repository root (GitHub Pages serves `index.html` by default)
+2. Upload `florrent_erp_v5.html` and rename it to `index.html` in the repository root (GitHub Pages serves `index.html` by default)
 3. Go to **Settings → Pages** in your repository
 4. Under **Source**, select **Deploy from a branch** → branch: `main` → folder: `/ (root)` → **Save**
-5. After ~60 seconds, your MRP will be live at:
+5. After ~60 seconds, your ERP will be live at:
    ```
    https://YOUR-GITHUB-USERNAME.github.io/YOUR-REPO-NAME/
    ```
@@ -127,7 +129,7 @@ The next user to make any change will create a fresh document.
 
 ```
 /
-├── index.html        ← the entire MRP app (rename florrent_mrp_v5.html to this)
+├── index.html        ← the entire ERP app (rename florrent_erp_v5.html to this)
 └── README.md         ← this file
 ```
 
