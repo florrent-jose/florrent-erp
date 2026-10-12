@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>florrent MRP</title>
+<title>florrent ERP</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:13px;background:#f0f4f8;color:#1e293b}
@@ -591,7 +591,7 @@ function renderLogin(){
   selEl.addEventListener("change",e=>sel=e.target.value);
   const signInBtn=el("button",{"style":{width:"100%",padding:"10px",background:A,color:"#fff",border:"none",borderRadius:"8px",fontSize:"14px",fontWeight:"600",cursor:"pointer",fontFamily:"inherit"}},"Sign In");
   signInBtn.addEventListener("click",()=>{const u=USERS.find(x=>x.id===sel);if(u){state.user=u;render();}});
-  box.append(el("div",{"class":"login-logo"},"florrent"),el("div",{"class":"login-sub"},"MRP SYSTEM"),el("div",{"class":"login-h"},"Welcome back"),el("div",{"class":"login-p"},"Select your name to continue"),selEl,signInBtn);
+  box.append(el("div",{"class":"login-logo"},"florrent"),el("div",{"class":"login-sub"},"ERP SYSTEM"),el("div",{"class":"login-h"},"Welcome back"),el("div",{"class":"login-p"},"Select your name to continue"),selEl,signInBtn);
   wrap.appendChild(box);return wrap;
 }
 
@@ -601,7 +601,7 @@ function renderApp(){
   // Sidebar
   const sb=el("div",{"class":"sidebar"});
   const sbl=el("div",{"class":"sidebar-logo"});
-  sbl.append(el("div",{"class":"sidebar-logo-text"},"florrent"),el("div",{"class":"sidebar-sub"},"MRP SYSTEM"));
+  sbl.append(el("div",{"class":"sidebar-logo-text"},"florrent"),el("div",{"class":"sidebar-sub"},"ERP SYSTEM"));
   const nav=el("div",{"class":"sidebar-nav"});
   NAV.forEach(n=>{
     const b=el("button",{"class":"nav-btn"+(state.page===n.id?" active":""),onClick:()=>{state.page=n.id;render();}},el("span",{"style":{fontSize:"13px"}},n.ico),n.lbl);
@@ -1714,14 +1714,14 @@ function renderAud(){
   // Export: save full state as JSON embedded in an HTML file
   function exportData(){
     const snapshot=JSON.stringify(state.db,function(k,v){return v;},2);
-    const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>florrent MRP Backup '+tod()+'</title></head><body>'
-      +'<script id="mrp-data" type="application/json">'+snapshot+'<\/script>'
-      +'<p style="font-family:sans-serif;padding:20px">florrent MRP data backup — '+new Date().toLocaleString()
-      +'<br>Import this file in the MRP app via Audit Log → Import Data.</p>'
+    const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>florrent ERP Backup '+tod()+'</title></head><body>'
+      +'<script id="erp-data" type="application/json">'+snapshot+'<\/script>'
+      +'<p style="font-family:sans-serif;padding:20px">florrent ERP data backup — '+new Date().toLocaleString()
+      +'<br>Import this file in the ERP app via Audit Log → Import Data.</p>'
       +'</body></html>';
     const blob=new Blob([html],{type:"text/html"});
     const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");a.href=url;a.download="florrent-mrp-backup-"+tod()+".html";
+    const a=document.createElement("a");a.href=url;a.download="florrent-erp-backup-"+tod()+".html";
     document.body.appendChild(a);a.click();document.body.removeChild(a);
     setTimeout(()=>URL.revokeObjectURL(url),5000);
     log("data.export","Exported snapshot");
@@ -1737,8 +1737,8 @@ function renderAud(){
         try{
           const parser=new DOMParser();
           const doc2=parser.parseFromString(ev.target.result,"text/html");
-          const script=doc2.getElementById("mrp-data");
-          if(!script)throw new Error("No MRP data found in file.");
+          const script=doc2.getElementById("erp-data")||doc2.getElementById("mrp-data");
+          if(!script)throw new Error("No ERP data found in file.");
           const imported=JSON.parse(script.textContent);
           const keys=["products","vendors","customers","warehouses","quotes","orderAcks",
                       "invoices","purchaseOrders","workOrders","packagingSlips","locations","auditLog","inventory"];
@@ -1804,7 +1804,7 @@ function showPasswordScreen() {
   root.innerHTML =
     '<div style="background:#fff;border-radius:16px;padding:34px;width:320px;font-family:system-ui,sans-serif">' +
       '<div style="font-size:26px;font-weight:700;color:#1B2A4A;letter-spacing:-1px;margin-bottom:4px">florrent</div>' +
-      '<div style="font-size:10px;color:#94a3b8;letter-spacing:1.2px;margin-bottom:20px">MRP SYSTEM</div>' +
+      '<div style="font-size:10px;color:#94a3b8;letter-spacing:1.2px;margin-bottom:20px">ERP SYSTEM</div>' +
       '<div style="font-size:17px;font-weight:600;color:#1B2A4A;margin-bottom:6px">Enter password</div>' +
       '<div style="font-size:12px;color:#64748b;margin-bottom:14px">This system is password protected.</div>' +
       '<input id="pw" type="password" placeholder="Password" ' +
@@ -1909,10 +1909,10 @@ try {
   if (firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('REPLACE')) {
     const fbApp = initializeApp(firebaseConfig);
     const fdb   = getFirestore(fbApp);
-    const MRP   = doc(fdb, "mrp", "shared");
-    window.__fbLoad   = () => getDoc(MRP).then(s => s.exists() ? JSON.parse(s.data().payload) : null);
-    window.__fbSave   = db  => setDoc(MRP, { payload: JSON.stringify(db), updatedAt: new Date().toISOString() });
-    window.__fbListen = cb  => onSnapshot(MRP, s => { try { if(s.exists()) cb(JSON.parse(s.data().payload)); } catch(e){} });
+    const ERP   = doc(fdb, "mrp", "shared"); // Firestore path kept as "mrp" so existing data still loads
+    window.__fbLoad   = () => getDoc(ERP).then(s => s.exists() ? JSON.parse(s.data().payload) : null);
+    window.__fbSave   = db  => setDoc(ERP, { payload: JSON.stringify(db), updatedAt: new Date().toISOString() });
+    window.__fbListen = cb  => onSnapshot(ERP, s => { try { if(s.exists()) cb(JSON.parse(s.data().payload)); } catch(e){} });
   }
 } catch(e) { console.warn('Firebase init error:', e.message); }
 
